@@ -36,6 +36,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224084944332652376}
+  - component: {fileID: 114365580918876186}
   m_Layer: 5
   m_Name: BattleSquare
   m_TagString: Untagged
@@ -137,6 +138,24 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: '!'
+--- !u!114 &114365580918876186
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1352091263177604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: addf6ff89b265114485ea5bdbb183fe1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPlayers: 0
+  OnPlaterChar: {fileID: 0}
+  plate: {fileID: 1577410762120890}
+  border: {fileID: 1201147645594872}
+  dangeMark: {fileID: 1999254623917068}
+  isGood: 0
+  isBad: 0
 --- !u!114 &114398374565251570
 MonoBehaviour:
   m_ObjectHideFlags: 1
