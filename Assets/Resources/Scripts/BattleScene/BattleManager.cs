@@ -6,8 +6,10 @@ using UnityEngine.EventSystems;
 
 public class BattleManager : MonoBehaviour {
 
+    public GameObject BattleCharacterPrefab;
+
     GameObject BattleCanvas;
-    GameObject SkillSlotPrefab, BattleCharacterPrefab, SkillStackPrefab;
+    GameObject SkillSlotPrefab, SkillStackPrefab;
     
     GameObject Background;
 
@@ -27,8 +29,8 @@ public class BattleManager : MonoBehaviour {
 
     //PlayerCharacter CurrentTurnChar;
     int CurrentTurnChar = 1;
-
-    //PlayerCharacter 
+    
+    //한번만 생성하고 전투 시작시 캔버스 통째로 끌어내리고, 전투 끝나면 끌어올리자.
 
     // Use this for initialization
     void Start()
@@ -36,7 +38,7 @@ public class BattleManager : MonoBehaviour {
 
         ///////////Prefab Set////////
         //SquarePrefab = Resources.Load("Prefabs/" + "BattleSquare") as GameObject;
-        BattleCharacterPrefab = Resources.Load("Prefabs/" + "BattleCharacter") as GameObject;
+        //BattleCharacterPrefab = Resources.Load("Prefabs/" + "BattleCharacter") as GameObject;
         SkillSlotPrefab = Resources.Load("Prefabs/" + "SkillSlot") as GameObject;
         SkillStackPrefab = Resources.Load("Prefabs/" + "SkillStack") as GameObject;
 
@@ -47,12 +49,25 @@ public class BattleManager : MonoBehaviour {
 
         ///////////Plate Set////////
 
-        PlayerCharacters = new BattleCharacter[6];
-        for (int i = 0; i < 6; i++)
-            PlayerCharacters[i] = new BattleCharacter();
-        EnemyCharacters = new BattleCharacter[6];
-        for (int i = 0; i < 6; i++)
-            EnemyCharacters[i] = new BattleCharacter();
+        for(int i = 0; i < _GameManager.instance.PlayerParty.PartyMemberCount; i ++)
+        {
+            GameObject Inst = Instantiate(BattleCharacterPrefab, PlayerPlates[_GameManager.instance.PlayerParty.Characters[i].CurrentPlate].transform);
+            Inst.GetComponent<BattleCharacter>().OnPlate = PlayerPlates[_GameManager.instance.PlayerParty.Characters[i].CurrentPlate];
+            Inst.GetComponent<BattleCharacter>().Data = _GameManager.instance.PlayerParty.Characters[i];
+
+            Sprite[] newSprite = Resources.LoadAll<Sprite>("Images/Char/" + Inst.GetComponent<BattleCharacter>().Data.BaseData.CharImage);
+            Inst.GetComponent<Image>().sprite = newSprite[Inst.GetComponent<BattleCharacter>().Data.BaseData.CharImageNumber];
+            Inst.GetComponent<Image>().enabled = true;
+            Inst.GetComponent<BattleCharacter>().isPlayers = true;
+            //적은 어떻게하지...
+        }
+
+        //PlayerCharacters = new BattleCharacter[6];
+        //for (int i = 0; i < 6; i++)
+        //    PlayerCharacters[i] = new BattleCharacter();
+        //EnemyCharacters = new BattleCharacter[6];
+        //for (int i = 0; i < 6; i++)
+        //    EnemyCharacters[i] = new BattleCharacter();
     }
         
  //       //SkillSlot Set//

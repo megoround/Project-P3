@@ -286,7 +286,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Resources\Scripts\_GameManager.cs" />
-    <Compile Include="Assets\Resources\Scripts\BattleScene\BattleChar.cs" />
+    <Compile Include="Assets\Resources\Scripts\BattleScene\BattleCharacter.cs" />
     <Compile Include="Assets\Resources\Scripts\BattleScene\BattleManager.cs" />
     <Compile Include="Assets\Resources\Scripts\BattleScene\Plate.cs" />
   </ItemGroup>
