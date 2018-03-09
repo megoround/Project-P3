@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Resources/Scenes/BT1.unity
+- path: Assets/Scenes/GameManagerTest.unity
   isLoaded: 1
   isActive: 1

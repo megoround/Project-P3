@@ -285,10 +285,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Resources\Scripts\_GameManager.cs" />
-    <Compile Include="Assets\Resources\Scripts\BattleScene\BattleCharacter.cs" />
-    <Compile Include="Assets\Resources\Scripts\BattleScene\BattleManager.cs" />
-    <Compile Include="Assets\Resources\Scripts\BattleScene\Plate.cs" />
+    <Compile Include="Assets\Scripts\_GameManager.cs" />
+    <Compile Include="Assets\Scripts\BattleScene\BattleCanvasManager.cs" />
+    <Compile Include="Assets\Scripts\BattleScene\BattleCharacter.cs" />
+    <Compile Include="Assets\Scripts\BattleScene\BattleManager.cs" />
+    <Compile Include="Assets\Scripts\BattleScene\Plate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\Images\UI\Background\새 텍스트 문서.txt" />

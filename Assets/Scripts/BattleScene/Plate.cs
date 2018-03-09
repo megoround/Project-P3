@@ -13,14 +13,4 @@ public class Plate : MonoBehaviour {
 
     public bool isGood;
     public bool isBad;
-
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }
