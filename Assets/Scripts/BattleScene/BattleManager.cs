@@ -7,46 +7,36 @@ using UnityEngine.EventSystems;
 public class BattleManager : MonoBehaviour {
 
     public static BattleManager instance = null;
-    public GameObject BattleCharacterPrefab, SkillSlotPrefab;
+    public GameObject BattleCharacterPrefab; //, SkillSlotPrefab;
 
-    GameObject BattleCanvas;
+    public GameObject BattleCanvas;
     GameObject SkillStackPrefab;
-
-    GameObject SkillTextWindow;
 
     public GameObject PlayerPlatesHolder;
     public GameObject[] PlayerPlates = new GameObject[9];
-
-
+    
     public GameObject EnemyPlatesHolder;
     public GameObject[] EnemyPlates = new GameObject[9];
 
-    BattleCharacter[] PlayerCharacters;
-    BattleCharacter[] EnemyCharacters;
-
     /// ////////////////////////////////////////
-
-    //PlayerCharacter CurrentTurnChar;
-    int CurrentTurnChar = 1;
-    
     //한번만 생성하고 전투 시작시 캔버스 통째로 끌어내리고, 전투 끝나면 끌어올리자.
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     // Use this for initialization
     void Start()
     {
-        instance = this;
         ///////////Prefab Set////////
         //SquarePrefab = Resources.Load("Prefabs/" + "BattleSquare") as GameObject;
         //BattleCharacterPrefab = Resources.Load("Prefabs/" + "BattleCharacter") as GameObject;
-        SkillStackPrefab = Resources.Load("Prefabs/" + "SkillStack") as GameObject;
-
-        BattleCanvas = GameObject.Find("BattleCanvas");
-        SkillTextWindow = GameObject.Find("SkillTextWindow");
-        SkillTextWindow.SetActive(false);
-
+        //SkillStackPrefab = Resources.Load("Prefabs/" + "SkillStack") as GameObject;
 
         ///////////Plate Set////////
 
+        //생성해서 변수만 가지고 나머지는 캔버스매니저에 맡겨도 될지도
         for(int i = 0; i < _GameManager.instance.PlayerParty.PartyMemberCount; i ++)
         {
             GameObject Inst = Instantiate(BattleCharacterPrefab, PlayerPlates[_GameManager.instance.PlayerParty.Characters[i].CurrentPlate].transform);
@@ -65,117 +55,12 @@ public class BattleManager : MonoBehaviour {
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerClick;
             entry.callback.AddListener((eventData) =>
-            { this.CharTouched(Inst); });
+            { BattleCanvasManager.instance.CharTouched(Inst); });
             Inst.GetComponent<EventTrigger>().triggers.Add(entry);
 
         }
-
-        //PlayerCharacters = new BattleCharacter[6];
-        //for (int i = 0; i < 6; i++)
-        //    PlayerCharacters[i] = new BattleCharacter();
-        //EnemyCharacters = new BattleCharacter[6];
-        //for (int i = 0; i < 6; i++)
-        //    EnemyCharacters[i] = new BattleCharacter();
-
-
-        //temp
-
-        for (int i = 0; i < 5; i++)
-        {
-            GameObject Inst = Instantiate(SkillSlotPrefab, BattleCanvas.transform.Find("Bottom/Status/Skills"));
-            Inst.transform.localPosition += new Vector3(100 * i, 0, 0);
-
-            if (i == 4)
-            {
-                Inst.name = "SkillSlot_" + "Wait";
-                Image Img = Inst.transform.Find("Image").GetComponent<Image>();
-
-                Sprite newSprite = Resources.Load<Sprite>("Images/UI/wait");
-                Img.sprite = newSprite;
-
-                GameObject SkillSlot = Inst;
-                GameObject SkillCDtext = SkillSlot.transform.Find("CDtext").gameObject;
-                GameObject SkillImg = SkillSlot.transform.Find("CDimage").gameObject;
-
-                SkillCDtext.GetComponent<Text>().text = "";
-                SkillImg.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f);
-
-            }
-            else
-            {
-                Inst.name = "SkillSlot_" + (i + 1);
-
-                EventTrigger.Entry entry = new EventTrigger.Entry();
-                entry.eventID = EventTriggerType.PointerEnter;
-                entry.callback.AddListener((eventData) =>
-                {
-                    SkillTextWindow.SetActive(true);
-                    SkillTextWindow.transform.localPosition = Inst.transform.localPosition;
-                    SkillTextWindow.transform.localPosition += new Vector3(200, -50, 0);
-                    SkillWindowPopup(Inst);
-                });
-                Inst.transform.Find("OnClick").gameObject.GetComponent<EventTrigger>().triggers.Add(entry);
-
-                entry = new EventTrigger.Entry();
-                entry.eventID = EventTriggerType.PointerExit;
-                entry.callback.AddListener((eventData) =>
-                {
-                    SkillTextWindow.SetActive(false);
-                });
-                Inst.transform.Find("OnClick").gameObject.GetComponent<EventTrigger>().triggers.Add(entry);
-
-                entry = new EventTrigger.Entry();
-                entry.eventID = EventTriggerType.PointerClick;
-                entry.callback.AddListener((eventData) =>
-                {
-                    //SkillSlotOnClick(Inst.name);
-                });
-                Inst.transform.Find("OnClick").gameObject.GetComponent<EventTrigger>().triggers.Add(entry);
-            }
-        }
     }
 
-    public void CharTouched(GameObject Target)
-    {
-        //Battle에서 다하지 말고 적당히 쌓이면 UI클래스를 하나 더 만들자
-        //if not targetting time
-
-        if(CurrentAnimChar != null)
-        {
-            if(Target == CurrentAnimChar) return;
-
-            //StopCoroutine(CharTouchedMove(CurrentAnimChar));
-            Sprite[] newSprite = Resources.LoadAll<Sprite>("Images/Char/" + Target.GetComponent<BattleCharacter>().Data.BaseData.CharImage);
-            Target.transform.GetChild(0).GetComponent<Image>().sprite = newSprite[Target.GetComponent<BattleCharacter>().Data.BaseData.CharImageNumber];
-        }
-
-        CurrentAnimChar = Target;
-        Debug.Log(Target.GetComponent<BattleCharacter>().Data.Name);
-        BattleCanvasManager.instance.RefreshSelectedChar(Target);
-        StartCoroutine(CharTouchedMove(Target));
-    }
-
-    public GameObject CurrentAnimChar; // temp;
-    
-    IEnumerator CharTouchedMove(GameObject Target) // temp
-    {
-        Sprite[] newSprite = Resources.LoadAll<Sprite>("Images/Char/" + Target.GetComponent<BattleCharacter>().Data.BaseData.CharImage);
-
-        int[] CharImageNumbers = new int[4];
-        CharImageNumbers[0] = Target.GetComponent<BattleCharacter>().Data.BaseData.CharImageNumber - 1;
-        CharImageNumbers[1] = Target.GetComponent<BattleCharacter>().Data.BaseData.CharImageNumber;
-        CharImageNumbers[2] = Target.GetComponent<BattleCharacter>().Data.BaseData.CharImageNumber + 1;
-        CharImageNumbers[3] = Target.GetComponent<BattleCharacter>().Data.BaseData.CharImageNumber;
-
-        while (Target == CurrentAnimChar)
-        {
-            for(int i = 0; i < 4 && Target == CurrentAnimChar ; i ++)
-            {
-                yield return new WaitForSeconds(0.2f);
-                Target.transform.GetChild(0).GetComponent<Image>().sprite = newSprite[CharImageNumbers[i]];
-            }
-        }
-    }
 
     //       //SkillSlot Set//
     //       for (int i=0;i<5;i++)
@@ -392,76 +277,6 @@ public class BattleManager : MonoBehaviour {
     //       GameObject Inst = Instantiate(SkillStackPrefab);
     //       //Inst.transform.parent = GameObject.Find()
     //   }
-
-    void SkillWindowPopup(GameObject Name)
-    {
-        string[] substring = Name.name.Split('_');
-        int number = int.Parse(substring[1]);
-        Debug.Log("" + name);
-        Skill Selected = _GameManager.instance.PlayerParty.Characters[0].BaseData.Skills[number - 1];
-
-        string PhaseColor = "";
-        switch (Selected.Phase)
-        {
-            case 0: PhaseColor = "<color=#00ff00>"; break; //prep
-            case 1: PhaseColor = "<color=#ffff00>"; break; //dash
-            case 2: PhaseColor = "<color=#ff0000>"; break; //blast  
-        }
-
-        SkillTextWindow.transform.Find("SkillMainWindow/Name").gameObject.GetComponent<Text>().text = PhaseColor + Selected.Name + "</color>";
-        SkillTextWindow.transform.Find("SkillMainWindow/Text").gameObject.GetComponent<Text>().text = Selected.Text;
-        SkillTextWindow.transform.Find("SkillMainWindow/SkillCD/CDtext").gameObject.GetComponent<Text>().text = "" + Selected.SkillCD;
-
-        if (Selected.isFree == 1)
-            SkillTextWindow.transform.Find("SkillMainWindow/Free").gameObject.SetActive(true);
-        else
-            SkillTextWindow.transform.Find("SkillMainWindow/Free").gameObject.SetActive(false);
-
-        ///
-
-        for (int i = 0; i < 3; i++)
-        {
-            GameObject TargetSquare =
-            SkillTextWindow.transform.Find("SkillSubWindow/Area1/CastAreaSquare/Square" + (i + 1)).gameObject;
-
-            if (Selected.CastArea[i] == 1)
-                TargetSquare.GetComponent<Image>().color = Color.blue;
-            else
-                TargetSquare.GetComponent<Image>().color = Color.gray;
-        }
-        for (int i = 0; i < 9; i++)
-        {
-            GameObject TargetSquare =
-            SkillTextWindow.transform.Find("SkillSubWindow/Area2/TargetAreaSquare/Square" + (i + 1)).gameObject;
-
-            if (Selected.TargetArea[i] == 1)
-            {
-                if (Selected.isHealing == 1)
-                    TargetSquare.GetComponent<Image>().color = Color.yellow;
-                else
-                    TargetSquare.GetComponent<Image>().color = Color.yellow;
-            }
-            else
-                TargetSquare.GetComponent<Image>().color = Color.gray;
-        }
-        for (int i = 0; i < 9; i++)
-        {
-            GameObject TargetSquare =
-            SkillTextWindow.transform.Find("SkillSubWindow/Area3/EffectAreaSquare/Square" + (i + 1)).gameObject;
-
-            if (Selected.EffectArea[i] == 1)
-            {
-                if (Selected.isHealing == 1)
-                    TargetSquare.GetComponent<Image>().color = Color.green;
-                else
-                    TargetSquare.GetComponent<Image>().color = Color.red;
-            }
-            else
-                TargetSquare.GetComponent<Image>().color = Color.gray;
-        }
-        //
-        SkillTextWindow.transform.Find("SkillSubWindow/Area4/Window/EffectText").gameObject.GetComponent<Text>().text = Selected.ExtraText;
-    }
 
     //   class BattleStackManager
     //   {

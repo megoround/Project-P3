@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Resources/Scenes/GameManagerTest.unity
+    path: Assets/Scenes/GameManagerTest.unity
     guid: febd92dcadbbb974090cb96a8160bfa0
   - enabled: 1
-    path: Assets/Resources/Scenes/BT1.unity
+    path: Assets/Scenes/BT1.unity
     guid: ce7228ffb2778a749ae2aef478058d08
