@@ -64,7 +64,9 @@ public class BattleCanvasManager : MonoBehaviour
     {
         //SkillInfoWindow 스크립트를 만들어서 넘길까...
 
-        SkillInfoWindow.transform.position = Button.transform.position + new Vector3(0, 25);
+        Debug.Log(Button.name);
+        Debug.Log(SkillInfoWindow.transform.position);
+        Debug.Log(Button.transform.position);
 
         int SN = CurrentSelectedChar.GetComponent<BattleCharacter>().Data.BaseData.SkillNumber[SkillNumber];
         Skill Selected = _GameManager.instance.XML_Skills[SN];
@@ -132,6 +134,7 @@ public class BattleCanvasManager : MonoBehaviour
         SkillInfoWindow.transform.Find("SkillSubWindow/Area4/Window/EffectText").gameObject.GetComponent<Text>().text = Selected.ExtraText;
 
         SkillInfoWindow.SetActive(true);
+        SkillInfoWindow.transform.position = Button.transform.position + new Vector3(0, 25);
     }
 
     public void HideSkillInfoWindow()
